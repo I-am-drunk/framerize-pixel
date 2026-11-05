@@ -10,8 +10,11 @@ Status: `0.1.0-alpha.1`, work in progress. Not published to npm.
 
 ## Install
 
+Not on npm yet. Install from a clone or from the CI tarball:
+
 ```sh
-npm install framerize-pixel
+git clone https://github.com/I-am-drunk/framerize-pixel && cd framerize-pixel
+npm ci && npm run build && node bin/framerize-pixel.js showcase --width=40
 ```
 
 Node 22.12 or later. ESM only. TypeScript declarations ship in the package.
@@ -30,9 +33,9 @@ const go = await confirm(theme, { message: 'Install the service?', initialValue:
 if (isCancelled(go)) process.exit(130);           // Ctrl+C, Escape or an aborted signal
 ```
 
-Run `npx framerize-pixel showcase` to see every component, `--width=40`,
-`--ascii`, `--phosphor`, `--plain` or `--json` to see the fallbacks, and
-`npx framerize-pixel demo` for the interactive prompts and live region.
+Run `node bin/framerize-pixel.js showcase` to see every component, add
+`--width=40`, `--ascii`, `--phosphor`, `--plain` or `--json` for the
+fallbacks, and `node bin/framerize-pixel.js demo` for prompts and the live region.
 
 ## What it guarantees
 
