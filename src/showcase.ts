@@ -42,3 +42,26 @@ export function showcase(theme: Theme): string {
     options: [{ name: '--json', summary: 'Machine-readable output; nothing else reaches stdout' }] }));
   return parts.join('\n');
 }
+
+/**
+ * Compact board of the animated parts: status, tasks, progress, secrets.
+ * Fits a 24-row terminal, so a live region can repaint it without clipping.
+ */
+export function board(theme: Theme): string {
+  const parts: string[] = [rule(theme, `${NAME} ${VERSION}`)];
+  parts.push(statusRows(theme, [
+    { status: 'ok', label: 'service', detail: 'running on 127.0.0.1:8788' },
+    { status: 'warn', label: 'upstream', detail: 'slow: 1,420 ms median' },
+    { status: 'bad', label: 'credentials', detail: 'token file missing' },
+    { status: 'info', label: 'version', detail: VERSION },
+  ]));
+  parts.push('', taskList(theme, [
+    { id: 'a', title: 'Resolve profile', state: 'done' },
+    { id: 'b', title: 'Check remote', state: 'active', note: 'waiting for 200' },
+    { id: 'c', title: 'Install service', state: 'pending' },
+    { id: 'd', title: 'Open firewall', state: 'skipped', note: 'loopback only' },
+  ]));
+  parts.push('', progress(theme, 7, 12, { label: 'sync', counts: true }));
+  parts.push(keyValues(theme, [{ key: 'profile', value: '~/.config/app/profile.json' }, { key: 'token', value: 'real-secret', secret: true }]));
+  return parts.join('\n');
+}

@@ -11,9 +11,17 @@ export interface KeyValue {
 /** Fixed-length Unicode mask. The length never follows the secret's length. */
 export const SECRET_MASK = '••••••••';
 
-/** The fixed mask in the theme's glyph set: `••••••••` or `********`. */
+/**
+ * The fixed mask in the theme's glyph set: `••••••••` or `********`.
+ * With a tick, one cell at a time dims in turn: a slow, quiet shimmer that
+ * says "hidden on purpose" without ever revealing length or content.
+ */
 export function secretMask(theme: Theme): string {
-  return theme.glyphs.mask.repeat(SECRET_MASK.length);
+  const cells = SECRET_MASK.length;
+  const tick = theme.tick ?? 0;
+  if (tick <= 0) return theme.glyphs.mask.repeat(cells);
+  const lit = tick % (cells * 2);
+  return Array.from({ length: cells }, (_, i) => (i === lit ? theme.paint.dim(theme.glyphs.mask) : theme.glyphs.mask)).join('');
 }
 
 /** Aligned `key  value` rows. Secrets are masked before any rendering. */

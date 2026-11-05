@@ -12,9 +12,12 @@ export interface LiveOptions {
   readonly signal?: AbortSignal;
 }
 
+/** A body that redraws itself per tick, so marks inside it animate. */
+export type Frame = string | ((tick: number) => string);
+
 export interface LiveRegion {
-  /** Repaint with new body lines. The spinner frame is prepended to line one. */
-  update(text: string): void;
+  /** Repaint with new body lines. A function body is re-rendered on every tick. */
+  update(body: Frame): void;
   /** Stop, print the final text permanently, release the terminal. Idempotent. */
   done(finalText?: string): void;
   readonly active: boolean;
@@ -47,11 +50,12 @@ export function live(theme: Theme, options: LiveOptions = {}): LiveRegion {
   const frames = options.frames ?? (theme.caps.unicode ? PIXEL_FRAMES : cliSpinners.line.frames);
   const interval = options.interval ?? 120;
   let frame = 0;
-  let body = '';
+  let body: Frame = '';
+  const text = (): string => (typeof body === 'function' ? body(frame) : body);
   let active = true;
   let last = '';
   const update = tty ? createLogUpdate(stream as NodeJS.WriteStream, { showCursor: true }) : undefined;
-  const render = (): string => (active ? theme.paint.role('accent')(frames[frame % frames.length] ?? '') + ' ' : '') + body;
+  const render = (): string => (active ? theme.paint.role('accent')(frames[frame % frames.length] ?? '') + ' ' : '') + text();
   const paint = (): void => { if (update !== undefined) update(render()); };
   const timer = tty ? setInterval(() => { frame += 1; paint(); }, interval) : undefined;
   timer?.unref();
@@ -61,10 +65,10 @@ export function live(theme: Theme, options: LiveOptions = {}): LiveRegion {
     active = false;
     if (timer !== undefined) clearInterval(timer);
     options.signal?.removeEventListener('abort', onAbort);
-    const text = finalText ?? body;
+    const final = finalText ?? (typeof body === 'function' ? body(0) : body);
     try {
       if (update !== undefined) { update.clear(); update.done(); }
-      if (text !== '') stream.write(text + '\n');
+      if (final !== '') stream.write(final + '\n');
     } finally {
       if (tty) showCursor(stream);
     }
@@ -74,11 +78,12 @@ export function live(theme: Theme, options: LiveOptions = {}): LiveRegion {
   else options.signal?.addEventListener('abort', onAbort, { once: true });
   return {
     get active() { return active; },
-    update(text: string) {
+    update(next: Frame) {
       if (!active) return;
-      body = text;
-      if (tty) paint();
-      else if (text !== last) { last = text; stream.write(text + '\n'); }
+      body = next;
+      if (tty) { paint(); return; }
+      const line = typeof next === 'function' ? next(0) : next;
+      if (line !== last) { last = line; stream.write(line + '\n'); }
     },
     done: finish,
   };

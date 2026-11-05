@@ -14,6 +14,8 @@ export interface Theme {
   readonly unicode: boolean;
   /** Usable width. Components never exceed it. Minimum 20. */
   readonly columns: number;
+  /** Animation tick for marks. Absent or 0 draws the resting mark. */
+  readonly tick?: number;
 }
 
 export interface ThemeOptions extends DetectOptions {
@@ -42,4 +44,9 @@ export function createTheme(options: ThemeOptions = {}): Theme {
 /** Theme with no color and ASCII glyphs; used for plain and JSON paths. */
 export function plainTheme(columns = 80): Theme {
   return createTheme({ env: {}, argv: [], platform: 'linux', mode: 'plain', ascii: true, columns, stream: { isTTY: false } as never });
+}
+
+/** The same theme at animation tick `tick`; every component that draws marks animates. */
+export function withTick(theme: Theme, tick: number): Theme {
+  return { ...theme, tick: Math.max(0, Math.floor(tick)) };
 }

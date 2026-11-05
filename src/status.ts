@@ -1,3 +1,4 @@
+import { markFrame } from './marks.js';
 import { fit, truncate, width } from './text.js';
 import type { Theme } from './theme.js';
 
@@ -11,9 +12,10 @@ export interface StatusRow {
 
 const roleOf = { ok: 'ok', bad: 'bad', warn: 'warn', info: 'info', pending: 'muted', active: 'accent', done: 'ok', skip: 'muted' } as const;
 
-/** The two-cell pixel mark for a status, painted in its role. */
+/** The two-cell pixel mark for a status, painted in its role. Animates when the theme carries a tick. */
 export function mark(theme: Theme, status: Status): string {
-  return theme.paint.role(roleOf[status])(theme.glyphs[status]);
+  const glyph = markFrame(theme.glyphs, theme.glyphs.ok === '▀▄', status, theme.tick ?? 0);
+  return theme.paint.role(roleOf[status])(glyph);
 }
 
 /**
