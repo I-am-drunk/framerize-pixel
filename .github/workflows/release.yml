@@ -1,0 +1,41 @@
+name: release
+
+# Builds the tagged source once, packs it, checks the tarball in a clean
+# consumer and attaches tarball + SHA256SUMS + build-info to a GitHub release.
+# Publication to npm is manual from the verified artifact; no npm token here.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.12.0'
+      - run: npm ci --no-audit --no-fund
+      - name: Tag must match package.json version
+        run: |
+          pkg="$(node -p "require('./package.json').version")"
+          test "v${pkg}" = "${GITHUB_REF_NAME}" || { echo "tag ${GITHUB_REF_NAME} != v${pkg}"; exit 1; }
+      - run: npm run typecheck && npm run build && npm test && npm run test:pty && npm run test:pack
+        env:
+          SOURCE_DATE_EPOCH: '0'
+      - name: Pack and checksum
+        run: |
+          mkdir -p out && npm pack --pack-destination out && cp dist/build-info.json out/
+          echo "source=${GITHUB_SHA}" > out/SOURCE
+          (cd out && sha256sum *.tgz build-info.json SOURCE > SHA256SUMS && cat SHA256SUMS)
+      - uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
+        with:
+          files: out/*
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          generate_release_notes: true

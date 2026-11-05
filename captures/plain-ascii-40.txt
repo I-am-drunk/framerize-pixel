@@ -1,0 +1,45 @@
+-- framerize-pixel 0.1.0-alpha.1 -------
++- framerize-pixel --------------------+
+| Retro pixel terminal styling for     |
+| Framerize.                           |
+| Readable at 40 columns, honest       |
+| without color.                       |
++--------------------------------------+
+
+-- status ------------------------------
+OK service      running on 127.0.0.1:87~
+/\ upstream     slow: 1,420 ms median o~
+!! credentials  token file missing
+ii version      0.1.0-alpha.1
+
+-- tasks -------------------------------
+1/4 ## Resolve profile
+2/4 :: Check remote  waiting for 200
+3/4 .. Install service
+4/4 -- Open firewall  loopback only
+
+-- accounts ----------------------------
+ID           Kind   State       Used
+-----------  -----  --------  ------
+alpha        oauth  ready     2m ago
+beta-长名字  token  expired   3d ago
+gamma        oauth  disabled   never
+
+sync ##############..........  58% 7/12
+profile  ~/.config/app/profile.json
+token    ********
+
+app 0.1.0-alpha.1
+
+Usage
+  app <command> [options]
+
+Commands
+  up     Pair, install and start the
+         service
+  check  Report readiness as text or
+         JSON
+
+Options
+  --json  Machine-readable output;
+          nothing else reaches stdout
