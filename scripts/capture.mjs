@@ -3,9 +3,10 @@
 // Human captures keep escapes (.ansi); plain captures are text (.txt).
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createTheme, phosphor, plainTheme, showcase, unicode } from '../dist/index.js';
 
-const dir = new URL('../captures/', import.meta.url).pathname;
+const dir = fileURLToPath(new URL('../captures/', import.meta.url));
 mkdirSync(dir, { recursive: true });
 const tty = { isTTY: true };
 const cases = [

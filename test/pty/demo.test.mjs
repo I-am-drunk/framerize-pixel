@@ -30,8 +30,9 @@ test('demo in a PTY: Ctrl+C at the first prompt exits 130, shows the cursor and 
 test('demo piped (no TTY): defaults flow through, json stdout stays pure', async () => {
   const { execFile } = await import('node:child_process');
   const { promisify } = await import('node:util');
-  const bin = new URL('../../bin/framerize-pixel.js', import.meta.url);
-  const { stdout, stderr } = await promisify(execFile)(process.execPath, [bin.pathname, 'demo', '--json'], { env: { ...process.env, TERM: 'xterm' } });
+  const { fileURLToPath } = await import('node:url');
+  const bin = fileURLToPath(new URL('../../bin/framerize-pixel.js', import.meta.url));
+  const { stdout, stderr } = await promisify(execFile)(process.execPath, [bin, 'demo', '--json'], { env: { ...process.env, TERM: 'xterm' } });
   assert.deepEqual(JSON.parse(stdout), { name: 'demo', palette: 'crt', tokenProvided: false, live: true });
   assert.ok(!stderr.includes('\u001b['), 'stderr progress lines carry no escapes in json mode');
 });

@@ -4,9 +4,10 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { readdirSync, readFileSync, rmSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = new URL('..', import.meta.url).pathname;
+const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
 
 function walk(dir, out = []) {
@@ -20,7 +21,7 @@ function walk(dir, out = []) {
 function sourceHash() {
   const hash = createHash('sha256');
   for (const file of [...walk(join(root, 'src')), join(root, 'package.json'), join(root, 'package-lock.json')]) {
-    hash.update(file.slice(root.length)).update('\0').update(readFileSync(file)).update('\0');
+    hash.update(relative(root, file).split(sep).join('/')).update('\0').update(readFileSync(file)).update('\0');
   }
   return hash.digest('hex');
 }
