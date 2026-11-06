@@ -1,6 +1,7 @@
 import { ConfirmPrompt, PasswordPrompt, SelectPrompt, TextPrompt, isCancel } from '@clack/core';
 import type { Readable } from 'node:stream';
 import { secretMask } from './keyvalue.js';
+import { truncate } from './text.js';
 import type { Theme } from './theme.js';
 import type { OutputStream } from './types.js';
 
@@ -32,7 +33,8 @@ function head(theme: Theme, message: string, state: string): string {
   const g = theme.glyphs;
   const mark = state === 'submit' ? theme.paint.role('ok')(g.ok) : state === 'cancel' ? theme.paint.role('bad')(g.bad)
     : state === 'error' ? theme.paint.role('warn')(g.warn) : theme.paint.role('accent')(g.info);
-  return `${mark} ${theme.paint.bold(message)}`;
+  // Keep the head on one row: a soft-wrapped head breaks the prompt's own line count on repaint.
+  return `${mark} ${theme.paint.bold(truncate(message, Math.max(1, theme.columns - 3), g.ellipsis))}`;
 }
 
 function tail(theme: Theme, error: string): string {

@@ -13,11 +13,12 @@ export function spawnCli(args, { cols = 40, rows = 24, env = {}, script = [] } =
   const term = env.TERM ?? BASE_ENV.TERM; // node-pty copies `name` over TERM, so the two must agree
   const proc = pty.spawn(process.execPath, [BIN, ...args], { name: term, cols, rows, cwd: ROOT, env: { ...BASE_ENV, ...env, TERM: term } });
   let output = '';
+  let exited = false;
   const steps = [...script];
   const timer = setTimeout(() => proc.kill(), 20_000);
   const feed = () => {
     const next = steps[0];
-    if (next === undefined) return;
+    if (next === undefined || exited) return; // stop polling once the child is gone
     const [waitFor, keys, delay = 60] = next;
     if (!output.includes(waitFor)) { setTimeout(feed, 15); return; }
     steps.shift();
@@ -26,7 +27,7 @@ export function spawnCli(args, { cols = 40, rows = 24, env = {}, script = [] } =
   proc.onData((data) => { output += data; });
   feed();
   return new Promise((resolve) => {
-    proc.onExit(({ exitCode, signal }) => { clearTimeout(timer); setTimeout(() => resolve({ exitCode, signal, output }), 30); });
+    proc.onExit(({ exitCode, signal }) => { exited = true; clearTimeout(timer); setTimeout(() => resolve({ exitCode, signal, output }), 30); });
   });
 }
 
