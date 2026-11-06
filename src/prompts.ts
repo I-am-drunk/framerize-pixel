@@ -1,7 +1,7 @@
 import { ConfirmPrompt, PasswordPrompt, SelectPrompt, TextPrompt, isCancel } from '@clack/core';
 import type { Readable } from 'node:stream';
 import { secretMask } from './keyvalue.js';
-import { truncate } from './text.js';
+import { strip, truncate, width } from './text.js';
 import type { Theme } from './theme.js';
 import type { OutputStream } from './types.js';
 
@@ -100,8 +100,10 @@ export async function confirm(theme: Theme, options: ConfirmOptions): Promise<bo
       if (this.state === 'submit' || this.state === 'cancel') return `${head(theme, options.message, this.state)}\n  ${theme.paint.dim(this.value ? 'yes' : 'no')}`;
       const yes = this.value ? theme.paint.role('accent')(`${g.on} yes`) : theme.paint.dim(`${g.off} yes`);
       const no = this.value ? theme.paint.dim(`${g.off} no`) : theme.paint.role('accent')(`${g.on} no`);
-      const hint = theme.paint.dim('y/n, arrows, enter');
-      return `${head(theme, options.message, this.state)}\n  ${yes}  ${no}  ${hint}`;
+      const choices = `  ${yes}  ${no}`;
+      const hintText = 'y/n, arrows, enter';
+      const hint = width(strip(choices)) + 2 + width(hintText) <= theme.columns ? `  ${theme.paint.dim(hintText)}` : '';
+      return `${head(theme, options.message, this.state)}\n${choices}${hint}`;
     },
   });
   return run<boolean>(p);
@@ -121,8 +123,10 @@ export async function select<T>(theme: Theme, options: SelectOptions<T>): Promis
         return `${head(theme, options.message, this.state)}\n  ${theme.paint.dim(chosen?.label ?? '')}`;
       }
       const rows = this.options.map((o, i) => {
-        const hint = o.hint === undefined ? '' : ' ' + theme.paint.dim(o.hint);
-        return i === this.cursor ? `  ${theme.paint.role('accent')(`${g.pointer} ${o.label}`)}${hint}` : `    ${o.label}${hint}`;
+        const label = truncate(o.label, Math.max(1, theme.columns - 4), g.ellipsis);
+        const room = theme.columns - 4 - width(label) - 1;
+        const hint = o.hint === undefined || room < 4 ? '' : ' ' + theme.paint.dim(truncate(o.hint, room, g.ellipsis));
+        return i === this.cursor ? `  ${theme.paint.role('accent')(`${g.pointer} ${label}`)}${hint}` : `    ${label}${hint}`;
       });
       return `${head(theme, options.message, this.state)}\n${rows.join('\n')}`;
     },
