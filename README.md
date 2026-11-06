@@ -88,14 +88,20 @@ itself; you decide where lines go.
 See `examples/` for a Server status screen and a Remote pairing flow, both
 runnable without any real account or service.
 
-## Animation
+## Marks and animation
 
-Marks are still by default. Give a theme a tick and every mark, task row and
-secret mask draws its frame for that tick; frame 0 is the resting glyph, so
-static output and snapshots never change. Motion is slow and quiet: a pixel
-orbits on `active`, `warn` tilts, `bad` fades like static, `info` swaps,
-`pending` shimmers, `ok` blinks once per cycle, and secret masks dim one
-cell at a time. Frames come from cli-spinners sets reshaped to two cells.
+At rest every mark is one standard symbol from `figures` (✔ ✘ ⚠ ℹ ● ◌ –),
+the set npm, Yarn, Listr and Clack ship, so each state reads at a glance.
+In motion a mark becomes a 4×4 pixel canvas drawn with braille cells, the
+drawille technique: the triangle draws down from its apex and its mark lands
+last, the check sweeps in and bobs, the cross strikes twice, the active ring
+rotates like a boot spinner and closes into a check on done. Every state has
+a designed exit that is never the enter reversed: the check lifts and breaks
+into dots, the cross collapses to a spark, the triangle sinks row by row.
+
+Give a theme a tick and every mark, task row and secret mask draws its frame
+for that tick; tick 0 is the resting symbol, so static output and snapshots
+never change. Secret masks dim one cell at a time.
 
 ```ts
 import { live, statusRows, withTick, TICK_MS } from 'framerize-pixel';
@@ -105,6 +111,11 @@ region.done(statusRows(theme, rows));                               // resting f
 ```
 
 `node bin/framerize-pixel.js showcase --live=10` shows the animated board.
+`node bin/framerize-pixel.js hover` turns on mouse tracking (SGR 1006, all
+modern terminals): rest the pointer on a mark for 120 ms to play its enter,
+move away for its exit. A fast pass plays nothing, and re-entering mid-exit
+resumes forward instead of restarting, so jitter never flickers. Mouse modes,
+raw mode and the cursor are restored on exit and on Ctrl+C.
 Each repaint is wrapped in synchronized-output escapes, so capable terminals
 never show a torn frame.
 
