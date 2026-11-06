@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CURSOR_HIDE, CURSOR_SHOW, spawnCli } from './helpers.mjs';
+import { CURSOR_HIDE, CURSOR_SHOW, KEYS, spawnCli } from './helpers.mjs';
 import { strip, width } from '../../dist/index.js';
 
 const visible = (output) => strip(output).replace(/\r/g, '').split('\n');
@@ -29,4 +29,14 @@ test('version prints the package version and json mode keeps stdout pure', async
   const parsed = JSON.parse(strip(json.output).trim());
   assert.equal(parsed.name, 'framerize-pixel');
   assert.ok(!json.output.includes(CURSOR_SHOW) && !json.output.includes('▛'), 'json mode writes nothing else');
+});
+
+test('showcase --live: Ctrl+C stops the animation at once, restores the cursor, exits 130', async () => {
+  const started = Date.now();
+  const { exitCode, output } = await spawnCli(['showcase', '--live=30', '--width=40'], { cols: 40, rows: 24, script: [['framerize-pixel', KEYS.ctrlC, 800]] });
+  assert.equal(exitCode, 130);
+  assert.ok(Date.now() - started < 10_000, 'did not run out the 30 second timer');
+  assert.ok(output.includes(CURSOR_HIDE) && output.lastIndexOf(CURSOR_SHOW) > output.lastIndexOf(CURSOR_HIDE), 'cursor restored after the last hide');
+  const lines = visible(output).map((l) => l.replace(/^\^C/, '')); // the PTY echoes ^C itself
+  assert.deepEqual(lines.filter((l) => width(l) > 40), [], 'no line wider than the PTY while animating');
 });

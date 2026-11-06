@@ -18,7 +18,8 @@ if (command === 'version' || args.includes('--version')) {
   const { crt, phosphor, live, withTick, TICK_MS, board } = await import('../dist/index.js');
   const theme = createTheme({ mode, ascii, palette: palette === 'phosphor' ? phosphor : crt,
     ...(Number.isFinite(columns) && columns > 0 ? { columns } : {}) });
-  const seconds = Number((args.find((a) => a.startsWith('--live')) ?? '').split('=')[1] ?? 8);
+  const rawSeconds = Number((args.find((a) => a.startsWith('--live')) ?? '').split('=')[1] ?? 8);
+  const seconds = Number.isFinite(rawSeconds) && rawSeconds > 0 ? rawSeconds : 8; // --live, --live=0, --live=abc all mean 8
   if (args.some((a) => a.startsWith('--live')) && theme.caps.tty && mode === 'human') {
     // Animated marks: the region redraws the showcase at each tick; Ctrl+C restores the terminal.
     const controller = new AbortController();
@@ -26,8 +27,10 @@ if (command === 'version' || args.includes('--version')) {
     const region = live(theme, { frames: [''], interval: TICK_MS, signal: controller.signal });
     // The board fits 24 rows; log-update clips taller frames to the terminal height.
     region.update((tick) => board(withTick(theme, tick)));
-    await new Promise((resolve) => setTimeout(resolve, Math.max(1, seconds) * 1000));
+    // Ctrl+C ends the wait at once instead of running out the timer.
+    await new Promise((resolve) => { const t = setTimeout(resolve, seconds * 1000); controller.signal.addEventListener('abort', () => { clearTimeout(t); resolve(); }, { once: true }); });
     region.done(board(theme));
+    if (controller.signal.aborted) process.exitCode = 130;
   } else {
     out.say(showcase(theme));
     out.json({ name: 'framerize-pixel', version: VERSION, showcase: 'suppressed in json mode' });

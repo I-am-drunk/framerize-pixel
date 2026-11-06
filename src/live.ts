@@ -55,7 +55,10 @@ export function live(theme: Theme, options: LiveOptions = {}): LiveRegion {
   let active = true;
   let last = '';
   const update = tty ? createLogUpdate(stream as NodeJS.WriteStream, { showCursor: true }) : undefined;
-  const render = (): string => (active ? theme.paint.role('accent')(frames[frame % frames.length] ?? '') + ' ' : '') + text();
+  const render = (): string => {
+    const glyph = active ? frames[frame % frames.length] ?? '' : '';
+    return (glyph === '' ? '' : theme.paint.role('accent')(glyph) + ' ') + text(); // no stray space for empty frames
+  };
   const paint = (): void => { if (update !== undefined) update(render()); };
   const timer = tty ? setInterval(() => { frame += 1; paint(); }, interval) : undefined;
   timer?.unref();
