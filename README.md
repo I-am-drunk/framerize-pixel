@@ -88,6 +88,26 @@ itself; you decide where lines go.
 See `examples/` for a Server status screen and a Remote pairing flow, both
 runnable without any real account or service.
 
+## Animation
+
+Marks are still by default. Give a theme a tick and every mark, task row and
+secret mask draws its frame for that tick; frame 0 is the resting glyph, so
+static output and snapshots never change. Motion is slow and quiet: a pixel
+orbits on `active`, `warn` tilts, `bad` fades like static, `info` swaps,
+`pending` shimmers, `ok` blinks once per cycle, and secret masks dim one
+cell at a time. Frames come from cli-spinners sets reshaped to two cells.
+
+```ts
+import { live, statusRows, withTick, TICK_MS } from 'framerize-pixel';
+const region = live(theme, { frames: [''], interval: TICK_MS });
+region.update((tick) => statusRows(withTick(theme, tick), rows)); // redraws per tick
+region.done(statusRows(theme, rows));                               // resting frame
+```
+
+`node bin/framerize-pixel.js showcase --live=10` shows the animated board.
+Each repaint is wrapped in synchronized-output escapes, so capable terminals
+never show a torn frame.
+
 ## Built on
 
 Behavior comes from mature packages, pinned exactly. framerize-pixel adds the
