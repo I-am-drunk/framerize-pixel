@@ -1,6 +1,7 @@
 import { ConfirmPrompt, PasswordPrompt, SelectPrompt, TextPrompt, isCancel } from '@clack/core';
 import type { Readable } from 'node:stream';
 import { secretMask } from './keyvalue.js';
+import { createSpark } from './spark.js';
 import { strip, truncate, width } from './text.js';
 import type { Theme } from './theme.js';
 import type { OutputStream } from './types.js';
@@ -56,6 +57,10 @@ type Validator = ((value: string) => string | undefined) | undefined;
 function adapt(v: Validator): ((value: string | undefined) => string | undefined) | undefined {
   return v === undefined ? undefined : (value) => v(value ?? '');
 }
+/** clack types `render` as private, but it is the public repaint used for resize; the spark reuses it. */
+function repaint(p: object): () => void {
+  return () => (p as { render(): void }).render();
+}
 async function run<T>(p: { prompt(): Promise<unknown> }): Promise<T | Cancelled> {
   const value = await p.prompt();
   return isCancel(value) || value === undefined ? CANCELLED : (value as T);
@@ -64,14 +69,18 @@ async function run<T>(p: { prompt(): Promise<unknown> }): Promise<T | Cancelled>
 /** Free text. Non-interactive: returns defaultValue, or CANCELLED when none. */
 export async function text(theme: Theme, options: TextOptions): Promise<string | Cancelled> {
   if (!interactive(options)) return options.defaultValue ?? CANCELLED;
+  const spark = createSpark(theme, theme.glyphs.mask !== '*');
   const p = new TextPrompt({
     ...common(options),
     ...(options.placeholder === undefined ? {} : { placeholder: options.placeholder }),
     ...(options.defaultValue === undefined ? {} : { defaultValue: options.defaultValue }),
     validate: adapt(options.validate),
     render() {
-      const shown = this.state === 'submit' || this.state === 'cancel' ? theme.paint.dim(this.value ?? '') : this.userInputWithCursor;
-      return `${head(theme, options.message, this.state)}\n  ${shown}${tail(theme, this.error)}`;
+      if (this.state === 'submit' || this.state === 'cancel') { spark.stop(); return `${head(theme, options.message, this.state)}\n  ${theme.paint.dim(this.value ?? '')}`; }
+      // A star flashes just after the caret while the user types, then fades.
+      const star = spark.frame(this.userInput.length);
+      if (star !== null) spark.tick(repaint(this));
+      return `${head(theme, options.message, this.state)}\n  ${this.userInputWithCursor}${star ?? ''}${tail(theme, this.error)}`;
     },
   });
   return run<string>(p);
@@ -80,10 +89,15 @@ export async function text(theme: Theme, options: TextOptions): Promise<string |
 /** Secret text. Input is masked while typing and never echoed on submit. */
 export async function secret(theme: Theme, options: SecretOptions): Promise<string | Cancelled> {
   if (!interactive(options)) return CANCELLED;
+  const spark = createSpark(theme, theme.glyphs.mask !== '*');
   const p = new PasswordPrompt({
     ...common(options), mask: theme.glyphs.mask, validate: adapt(options.validate),
     render() {
-      const shown = this.state === 'submit' || this.state === 'cancel' ? theme.paint.dim(secretMask(theme)) : this.masked;
+      if (this.state === 'submit' || this.state === 'cancel') { spark.stop(); return `${head(theme, options.message, this.state)}\n  ${theme.paint.dim(secretMask(theme))}`; }
+      // The newest mask cell flashes a star, then settles. Length only; the value never renders.
+      const star = spark.frame(this.masked.length);
+      if (star !== null) spark.tick(repaint(this));
+      const shown = star === null ? this.masked : this.masked.slice(0, -1) + star;
       return `${head(theme, options.message, this.state)}\n  ${shown}${tail(theme, this.error)}`;
     },
   });

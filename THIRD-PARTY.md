@@ -16,6 +16,7 @@ exactly in package.json and package-lock.json. Visual design is original.
 | ansi-escapes | 7.3.0 | MIT | cursor show for failure recovery |
 | cli-spinners | 3.4.0 | MIT | spinner frame sets and intervals |
 | @clack/core | 1.5.1 | MIT | prompt state machines, raw mode, cursor restore, AbortSignal |
+| figures | 6.1.0 | MIT | resting status symbols (tick, cross, warning, info, bullet, pointer) with Windows fallbacks |
 
 ## Adapted source (copied with changes into this repository)
 
@@ -28,6 +29,10 @@ exactly in package.json and package-lock.json. Visual design is original.
 - `src/capabilities.ts` adapts the Unicode heuristics from
   is-unicode-supported 2.1.0 (MIT, Sindre Sorhus) with the same inputs
   injected, plus LANG=C and LC_ALL=C/POSIX treated as ASCII.
+
+- `src/braille.ts` implements the braille 2x4 dot-canvas technique known from
+  drawille (MIT, Adam Tauber) and blessed; no code was copied, only the
+  Unicode braille bit layout, which is part of the Unicode standard.
 
 Both upstream licenses are MIT; the license text is identical to LICENSE
 with the upstream copyright holder. No T3 Code source was copied.

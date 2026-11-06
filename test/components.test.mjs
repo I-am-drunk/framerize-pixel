@@ -24,13 +24,13 @@ test('rule is exactly the width with and without a label', () => {
 test('status rows align labels and truncate detail inside the width', () => {
   const s = statusRows(t40, [{ status: 'ok', label: 'short', detail: 'd'.repeat(80) }, { status: 'bad', label: 'a much longer label', detail: 'x' }]);
   assert.ok(maxWidth(s) <= 40, s);
-  assert.match(s, /^OK short +d+~$/m);
-  assert.equal(statusRows(t40, [{ status: 'warn', label: 'w' }]), '/\\ w');
+  assert.match(s, /^v {2}short +d+~$/m);
+  assert.equal(statusRows(t40, [{ status: 'warn', label: 'w' }]), '!  w');
 });
 
 test('task list numbers steps and maps states to marks', () => {
   const s = taskList(t40, [{ id: '1', title: 'a', state: 'done' }, { id: '2', title: 'b', state: 'failed', note: 'why' }]);
-  assert.deepEqual(lines(s), ['1/2 ## a', '2/2 !! b  why']);
+  assert.deepEqual(lines(s), ['1/2 v  a', '2/2 x  b  why']);
 });
 
 test('table shrinks the widest column until it fits', () => {

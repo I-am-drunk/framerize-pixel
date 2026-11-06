@@ -46,6 +46,7 @@
     "ansi-styles": "7.0.0",
     "cli-spinners": "3.4.0",
     "cli-truncate": "6.2.0",
+    "figures": "6.1.0",
     "log-update": "8.0.0",
     "string-width": "8.3.0",
     "strip-ansi": "7.2.0",

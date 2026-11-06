@@ -19,7 +19,7 @@ test('NO_COLOR and TERM=dumb in a PTY fall back to plain text and ASCII marks', 
   assert.equal(noColor.exitCode, 0);
   assert.ok(!noColor.output.includes('\u001b['), 'NO_COLOR output has no escapes');
   const dumb = await spawnCli(['showcase'], { cols: 60, env: { TERM: 'dumb' } });
-  assert.ok(!dumb.output.includes('\u001b[') && dumb.output.includes('OK service'), 'dumb terminal gets ASCII marks');
+  assert.ok(!dumb.output.includes('\u001b[') && dumb.output.includes('v  service'), 'dumb terminal gets ASCII marks');
 });
 
 test('version prints the package version and json mode keeps stdout pure', async () => {

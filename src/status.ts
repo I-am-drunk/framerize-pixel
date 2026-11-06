@@ -14,7 +14,7 @@ const roleOf = { ok: 'ok', bad: 'bad', warn: 'warn', info: 'info', pending: 'mut
 
 /** The two-cell pixel mark for a status, painted in its role. Animates when the theme carries a tick. */
 export function mark(theme: Theme, status: Status): string {
-  const glyph = markFrame(theme.glyphs, theme.glyphs.ok === '▀▄', status, theme.tick ?? 0);
+  const glyph = markFrame(theme.glyphs, theme.glyphs.pixel.tl === '▛', status, theme.tick ?? 0);
   return theme.paint.role(roleOf[status])(glyph);
 }
 
@@ -25,7 +25,7 @@ export function mark(theme: Theme, status: Status): string {
  */
 export function statusLine(theme: Theme, row: StatusRow, labelCells?: number, columns = theme.columns): string {
   const m = mark(theme, row.status);
-  const markCells = width(theme.glyphs[row.status]) + 1;
+  const markCells = 3; // every mark is two cells plus a space, in both glyph sets
   const labelRoom = Math.max(1, columns - markCells);
   const label = labelCells === undefined ? truncate(row.label, labelRoom, theme.glyphs.ellipsis) : fit(row.label, Math.min(labelCells, labelRoom));
   const head = `${m} ${label}`;

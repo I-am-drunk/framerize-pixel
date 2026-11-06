@@ -7,16 +7,16 @@
 [34m▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟[39m
 
 [34m▔▔[39m[1m status [22m[34m▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔[39m
-[32m▀▄[39m service      [2mrunning on 127.0.0.1:87…[22m
-[33m▞▚[39m upstream     [2mslow: 1,420 ms median o…[22m
-[31m▄▀[39m credentials  [2mtoken file missing[22m
-[36m▌▐[39m version      [2m0.1.0-alpha.1[22m
+[32m✔ [39m service      [2mrunning on 127.0.0.1:87…[22m
+[33m⚠ [39m upstream     [2mslow: 1,420 ms median o…[22m
+[31m✘ [39m credentials  [2mtoken file missing[22m
+[36mℹ [39m version      [2m0.1.0-alpha.1[22m
 
 [34m▔▔[39m[1m tasks [22m[34m▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔[39m
-[2m1/4[22m [32m▓▓[39m Resolve profile
-[2m2/4[22m [33m▒▒[39m Check remote  [2mwaiting for 200[22m
-[2m3/4[22m [90m░░[39m Install service
-[2m4/4[22m [90m··[39m Open firewall  [2mloopback only[22m
+[2m1/4[22m [32m✔ [39m Resolve profile
+[2m2/4[22m [33m● [39m Check remote  [2mwaiting for 200[22m
+[2m3/4[22m [90m◌ [39m Install service
+[2m4/4[22m [90m– [39m Open firewall  [2mloopback only[22m
 
 [34m▔▔[39m[1m accounts [22m[34m▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔[39m
 [1mID         [22m  [1mKind [22m  [1mState   [22m  [1m  Used[22m

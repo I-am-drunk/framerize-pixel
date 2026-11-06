@@ -7,7 +7,10 @@ export { createTheme, plainTheme, withTick, MIN_COLUMNS, type Theme, type ThemeO
 export { fit, pad, strip, truncate, width, wrap, type Align } from './text.js';
 export { box, rule, type BoxOptions } from './box.js';
 export { mark, statusLine, statusRows, type Status, type StatusRow } from './status.js';
-export { markFrame, TICK_MS } from './marks.js';
+export { markFrame, restingMark, exitFrame, MOTION, TICK_MS, type Motion } from './marks.js';
+export { braille, revealDown, revealRight, type Sprite } from './braille.js';
+export { createHover, DWELL_MS, type Hover, type HoverPhase } from './hover.js';
+export { createSpark, SPARK_FRAMES, SPARK_ASCII, SPARK_MS, type Spark } from './spark.js';
 export { taskList, taskSummary, updateTask, type Task, type TaskState } from './tasks.js';
 export { table, layout, type Column, type Row } from './table.js';
 export { progress, MIN_BAR, type ProgressOptions } from './progress.js';

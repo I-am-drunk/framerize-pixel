@@ -22,6 +22,15 @@ identity, the composable API and the safety wrapper around them.
 | Unicode detection | is-unicode-supported | 2.1.0 | MIT | sindresorhus heuristics for Windows/TERM |
 | Strip escapes | strip-ansi | 7.2.0 | MIT | plain and JSON paths must stay clean |
 | Cursor and erase codes | ansi-escapes | 7.3.0 | MIT | already a log-update dependency |
+| Resting status symbols | figures | 6.1.0 | MIT | the ✔ ✖ ⚠ ℹ set npm, Yarn, Listr and Clack ship; Windows fallbacks included |
+
+## Marks: crisp at rest, pixels in motion
+
+Resting marks are one standard symbol from figures. Half-block pairs were
+tried first and read as nothing. Motion uses a 4x4 braille pixel canvas per
+mark (two cells): enter and exit sequences are designed per state, the last
+enter frame snaps to the symbol, and the exit is never the enter reversed.
+Hover arms a 120 ms dwell before anything plays; a fast pass never flickers.
 
 Rejected: ink (React reconciler plus yoga layout for a styling library is
 too heavy), @clack/prompts (its visual identity is the thing being replaced),

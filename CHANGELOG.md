@@ -7,6 +7,12 @@ the project follows Semantic Versioning (see docs/release.md).
 
 ### Changed
 
+- Marks redesigned. Resting marks are one standard symbol from figures
+  (✔ ✘ ⚠ ℹ ● ◌ –) padded to two cells; the half-block pairs are gone.
+  Motion draws on a 4x4 braille pixel canvas per mark: each state has a
+  designed enter, a quiet loop and a designed exit (never the enter reversed).
+  ASCII marks are single letters (v x ! i o * –) and never animate.
+
 - Package renamed from `pixelterm` to `framerize-pixel`; bin is `framerize-pixel`,
   the ASCII override is `FRAMERIZE_PIXEL_ASCII`. Migration: update imports and the bin name.
 - Box frames use the lower-half block on the bottom edge and the right-half

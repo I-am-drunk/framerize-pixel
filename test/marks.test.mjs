@@ -4,10 +4,10 @@ import { ascii, createTheme, mark, markFrame, plainTheme, statusRows, strip, uni
 
 const STATUSES = ['ok', 'bad', 'warn', 'info', 'pending', 'active', 'done', 'skip'];
 
-test('tick 0 is the resting glyph for every status in both glyph sets', () => {
+test('tick 0 is the resting symbol padded to two cells, in both glyph sets', () => {
   for (const s of STATUSES) {
-    assert.equal(markFrame(unicode, true, s, 0), unicode[s]);
-    assert.equal(markFrame(ascii, false, s, 0), ascii[s]);
+    assert.equal(markFrame(unicode, true, s, 0), unicode[s].padEnd(2));
+    assert.equal(markFrame(ascii, false, s, 0), ascii[s].padEnd(2));
   }
 });
 
@@ -20,11 +20,11 @@ test('every frame of every sequence is exactly two cells wide', () => {
 
 test('a theme without a tick renders the static mark; withTick animates it', () => {
   const t = createTheme({ env: { TERM: 'xterm' }, argv: [], platform: 'linux', columns: 40, stream: { isTTY: false } });
-  assert.equal(strip(mark(t, 'active')), '▒▒');
+  assert.equal(strip(mark(t, 'active')), '● ');
   const frames = new Set(Array.from({ length: 8 }, (_, i) => strip(mark(withTick(t, i + 1), 'active'))));
   assert.ok(frames.size >= 3, `active cycles through frames: ${[...frames].join(' ')}`);
-  assert.equal(strip(mark(withTick(t, 5), 'done')), '▓▓', 'done never moves');
-  assert.equal(strip(mark(withTick(t, 5), 'skip')), '··', 'skip never moves');
+  assert.equal(strip(mark(withTick(t, 40), 'skip')), '– ', 'skip never moves');
+  assert.ok(/^[\u2800-\u28ff]{2}$/.test(strip(mark(withTick(t, 1), 'warn'))), 'enter frames are braille pixels');
 });
 
 test('animated rows keep their width and alignment at every tick', () => {
