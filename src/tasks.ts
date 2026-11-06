@@ -1,5 +1,5 @@
 import { statusLine, type Status } from './status.js';
-import type { Theme } from './theme.js';
+import { staggered, type Theme } from './theme.js';
 
 export type TaskState = 'pending' | 'active' | 'done' | 'failed' | 'skipped';
 
@@ -20,7 +20,7 @@ export function taskList(theme: Theme, tasks: readonly Task[]): string {
   return tasks.map((task, index) => {
     const n = theme.paint.dim(`${String(index + 1).padStart(digits)}/${total}`);
     const row = { status: statusOf[task.state], label: task.title, ...(task.note === undefined ? {} : { detail: task.note }) };
-    return `${n} ${statusLine(theme, row, undefined, theme.columns - counter)}`;
+    return `${n} ${statusLine(staggered(theme, index), row, undefined, theme.columns - counter)}`; // enters play top to bottom
   }).join('\n');
 }
 

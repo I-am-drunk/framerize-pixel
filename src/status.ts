@@ -1,6 +1,6 @@
 import { markFrame } from './marks.js';
 import { fit, truncate, width } from './text.js';
-import type { Theme } from './theme.js';
+import { staggered, type Theme } from './theme.js';
 
 export type Status = 'ok' | 'bad' | 'warn' | 'info' | 'pending' | 'active' | 'done' | 'skip';
 
@@ -42,5 +42,5 @@ export function statusLineWith(theme: Theme, row: StatusRow, m: string, labelCel
 /** Several rows with labels aligned in one column. Narrow terminals still fit. */
 export function statusRows(theme: Theme, rows: readonly StatusRow[], columns = theme.columns): string {
   const widest = Math.min(Math.max(0, ...rows.map((r) => width(r.label))), Math.max(8, Math.floor(columns / 2)));
-  return rows.map((row) => statusLine(theme, row, widest, columns)).join('\n');
+  return rows.map((row, index) => statusLine(staggered(theme, index), row, widest, columns)).join('\n'); // enters play top to bottom
 }

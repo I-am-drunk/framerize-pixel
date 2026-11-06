@@ -3,7 +3,7 @@ export { detect } from './capabilities.js';
 export { crt, phosphor, type Palette, type Swatch } from './palette.js';
 export { ascii, unicode, glyphsFor, type Border, type Glyphs } from './glyphs.js';
 export { createPainter, type Paint, type Painter } from './style.js';
-export { createTheme, plainTheme, withTick, MIN_COLUMNS, type Theme, type ThemeOptions } from './theme.js';
+export { createTheme, plainTheme, withTick, staggered, MIN_COLUMNS, type Theme, type ThemeOptions } from './theme.js';
 export { fit, pad, strip, truncate, width, wrap, type Align } from './text.js';
 export { box, rule, type BoxOptions } from './box.js';
 export { mark, statusLine, statusLineWith, statusRows, type Status, type StatusRow } from './status.js';

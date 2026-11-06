@@ -50,3 +50,12 @@ export function plainTheme(columns = 80): Theme {
 export function withTick(theme: Theme, tick: number): Theme {
   return { ...theme, tick: Math.max(0, Math.floor(tick)) };
 }
+
+/**
+ * Stagger: row `index` starts `gap` ticks after the row before it, so a list
+ * of marks plays its enters one after another instead of all at once.
+ * Rows whose turn has not come draw the resting mark.
+ */
+export function staggered(theme: Theme, index: number, gap = 3): Theme {
+  return withTick(theme, Math.max(0, (theme.tick ?? 0) - index * gap));
+}
