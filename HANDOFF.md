@@ -12,7 +12,7 @@ https://github.com/I-am-drunk/framerize-pixel. Not published to npm.
 - CLI: `framerize-pixel showcase|demo|version` with `--json`, `--plain`,
   `--ascii`, `--phosphor`, `--width=N`.
 - Examples: `examples/server-status.mjs`, `examples/remote-pair.mjs`.
-- Tests: 42 behavior tests, 7 showcase snapshots, 6 PTY tests through node-pty, packed-consumer
+- Tests: 42 behavior tests, 7 showcase snapshots, 4 mark animation tests, 1 fuzz test over every renderer, 6 PTY tests through node-pty, packed-consumer
   check with type-check of shipped declarations, nine captures.
 - Docs: README, TESTING, DECISIONS, THIRD-PARTY, CHANGELOG, docs/release.md.
 - CI: `ci.yml` matrix (ubuntu, windows, macos; Node 22.12 and 24) plus a
@@ -22,7 +22,7 @@ https://github.com/I-am-drunk/framerize-pixel. Not published to npm.
 
 | Check | Node 22.23.4 | Node 24.13.0 |
 | --- | --- | --- |
-| `npm test` (behavior + snapshots) | 49 pass, 0 fail | 49 pass, 0 fail |
+| `npm test` (behavior, snapshots, marks, fuzz) | 54 pass, 0 fail | 54 pass, 0 fail |
 | `npm run test:pty` | 6 pass, 0 fail | 6 pass, 0 fail |
 | `npm run test:pack` | ok, 49 files | ok, 49 files |
 | tarball sha256 | 46f73099bec6c4a6… | identical |
