@@ -37,7 +37,9 @@ function section(theme: Theme, title: string, entries: readonly HelpEntry[]): st
 
 /** Help text: name line, usage, commands, options, examples. Fits narrow widths. */
 export function help(theme: Theme, spec: HelpSpec): string {
-  const head = theme.paint.bold(spec.name) + (spec.version === undefined ? '' : ' ' + theme.paint.dim(spec.version));
+  const ver = spec.version === undefined ? '' : ` ${spec.version}`;
+  const name = truncate(spec.name, Math.max(1, theme.columns - width(ver)), theme.glyphs.ellipsis);
+  const head = theme.paint.bold(name) + (ver === '' ? '' : ' ' + theme.paint.dim(ver.trimStart()));
   const out = [head];
   if (spec.tagline !== undefined) out.push(...wrap(spec.tagline, theme.columns));
   if (spec.usage !== undefined && spec.usage.length > 0) {

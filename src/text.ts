@@ -50,6 +50,10 @@ export function fit(text: string, cells: number, align: Align = 'left', ellipsis
  */
 export function wrap(text: string, cells: number): string[] {
   const indent = /^ */.exec(text)?.[0] ?? '';
-  const wrapped = wrapAnsi(text.slice(indent.length), Math.max(1, cells - indent.length), { hard: true, trim: true });
+  // Tabs become one space (terminals disagree on tab stops). A combining mark or
+  // joiner after a space is a zero-width "word" that defeats trailing-space
+  // trimming inside wrap-ansi, so drop the spaces it would ride on.
+  const body = text.slice(indent.length).replace(/\t/g, ' ').replace(/ +(?=[\p{M}\u200d])/gu, '');
+  const wrapped = wrapAnsi(body, Math.max(1, cells - indent.length), { hard: true, trim: true });
   return wrapped.split('\n').map((line, i) => (i === 0 ? indent + line : line).replace(/ +$/, ''));
 }
