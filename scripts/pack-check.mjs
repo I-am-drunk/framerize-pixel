@@ -6,22 +6,26 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { execPath } from 'node:process';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+// Run npm through its JS entry with this Node: spawning npm.cmd without a shell
+// fails with EINVAL on Windows since Node's CVE-2024-27980 hardening.
+const npmCli = join(dirname(execPath), process.platform === 'win32' ? 'node_modules/npm/bin/npm-cli.js' : '../lib/node_modules/npm/bin/npm-cli.js');
+const npm = (args, cwd) => run(execPath, [npmCli, ...args], cwd);
 const work = mkdtempSync(join(tmpdir(), 'framerize-pixel-pack-'));
 const run = (cmd, args, cwd) => execFileSync(cmd, args, { cwd, stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' });
 try {
-  run(npm, ['pack', '--pack-destination', work, '--ignore-scripts', '--loglevel=error'], root);
+  npm(['pack', '--pack-destination', work, '--ignore-scripts', '--loglevel=error'], root);
   const tgz = readdirSync(work).find((f) => f.endsWith('.tgz'));
   const sha = createHash('sha256').update(readFileSync(join(work, tgz))).digest('hex');
   const consumer = join(work, 'consumer');
   mkdirSync(consumer);
   writeFileSync(join(consumer, 'package.json'), JSON.stringify({ name: 'consumer', private: true, type: 'module' }));
   const typesNode = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).devDependencies['@types/node'];
-  run(npm, ['install', '--no-audit', '--no-fund', '--ignore-scripts', '--loglevel=error', join(work, tgz), `@types/node@${typesNode}`], consumer);
+  npm(['install', '--no-audit', '--no-fund', '--ignore-scripts', '--loglevel=error', join(work, tgz), `@types/node@${typesNode}`], consumer);
   writeFileSync(join(consumer, 'use.mjs'), readFileSync(join(root, 'scripts/pack-consumer.mjs')));
   const out = run(process.execPath, ['use.mjs'], consumer);
   writeFileSync(join(consumer, 'use.ts'), readFileSync(join(root, 'scripts/pack-consumer.ts')));
