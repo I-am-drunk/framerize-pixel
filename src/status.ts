@@ -24,7 +24,11 @@ export function mark(theme: Theme, status: Status): string {
  * gives way last; the detail is truncated or dropped first.
  */
 export function statusLine(theme: Theme, row: StatusRow, labelCells?: number, columns = theme.columns): string {
-  const m = mark(theme, row.status);
+  return statusLineWith(theme, row, mark(theme, row.status), labelCells, columns);
+}
+
+/** `statusLine` with a caller-supplied two-cell mark, for hover and other live animations. */
+export function statusLineWith(theme: Theme, row: StatusRow, m: string, labelCells?: number, columns = theme.columns): string {
   const markCells = 3; // every mark is two cells plus a space, in both glyph sets
   const labelRoom = Math.max(1, columns - markCells);
   const label = labelCells === undefined ? truncate(row.label, labelRoom, theme.glyphs.ellipsis) : fit(row.label, Math.min(labelCells, labelRoom));

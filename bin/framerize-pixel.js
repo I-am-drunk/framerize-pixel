@@ -35,11 +35,26 @@ if (command === 'version' || args.includes('--version')) {
     out.say(showcase(theme));
     out.json({ name: 'framerize-pixel', version: VERSION, showcase: 'suppressed in json mode' });
   }
+} else if (command === 'hover') {
+  // Mouse hover board: rest the pointer on a mark to play its enter, move away for its exit.
+  const { hoverBoard } = await import('../dist/index.js');
+  const theme = createTheme({ mode, ascii, ...(Number.isFinite(columns) && columns > 0 ? { columns } : {}) });
+  const seconds = Number((args.find((a) => a.startsWith('--seconds=')) ?? '').split('=')[1]);
+  const controller = new AbortController();
+  process.once('SIGINT', () => controller.abort());
+  process.exitCode = await hoverBoard(theme, [
+    { status: 'ok', label: 'service', detail: 'running on 127.0.0.1:8788' },
+    { status: 'warn', label: 'upstream', detail: 'slow: 1,420 ms median' },
+    { status: 'bad', label: 'credentials', detail: 'token file missing' },
+    { status: 'info', label: 'version', detail: VERSION },
+    { status: 'pending', label: 'queue', detail: 'waiting' },
+    { status: 'active', label: 'sync', detail: '7 of 12' },
+  ], { signal: controller.signal, ...(Number.isFinite(seconds) && seconds > 0 ? { durationMs: seconds * 1000 } : {}) });
 } else if (command === 'demo') {
   const { runDemo } = await import('../dist/demo.js');
   process.exitCode = await runDemo({ mode, ascii });
 } else {
   out.note(`unknown command: ${command}`);
-  out.note('usage: framerize-pixel [showcase|demo|version] [--json|--plain] [--ascii] [--phosphor] [--width=N] [--live[=seconds]]');
+  out.note('usage: framerize-pixel [showcase|hover|demo|version] [--json|--plain] [--ascii] [--phosphor] [--width=N] [--live[=seconds]]');
   process.exitCode = 2;
 }
