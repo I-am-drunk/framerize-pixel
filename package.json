@@ -34,7 +34,7 @@
     "build": "node scripts/build.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --test test/*.test.mjs",
-    "test:pty": "node --test test/pty/*.test.mjs",
+    "test:pty": "node scripts/pty-prep.mjs && node --test test/pty/*.test.mjs",
     "test:pack": "node scripts/pack-check.mjs",
     "captures": "node scripts/capture.mjs",
     "showcase": "node bin/framerize-pixel.js showcase",
