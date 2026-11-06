@@ -37,7 +37,9 @@ function titleBar(theme: Theme, title: string, cells: number): string {
 export function rule(theme: Theme, label?: string, cells = theme.columns): string {
   const frame = theme.paint.role('frame');
   const bar = theme.glyphs.rule;
-  if (label === undefined) return frame(bar.repeat(cells));
+  cells = Number.isFinite(cells) ? Math.max(0, Math.floor(cells)) : theme.columns;
+  if (cells === 0) return '';
+  if (label === undefined || cells < 8) return frame(bar.repeat(cells)); // too narrow for a label
   const text = ` ${truncate(label, Math.max(1, cells - 6), theme.glyphs.ellipsis)} `;
   const rest = Math.max(0, cells - width(text) - 2);
   return frame(bar.repeat(2)) + theme.paint.bold(text) + frame(bar.repeat(rest));

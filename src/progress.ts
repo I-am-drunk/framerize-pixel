@@ -14,8 +14,9 @@ export const MIN_BAR = 4;
 
 /** A pixel progress bar: `label ████░░░░ 42%`. Never exceeds the theme width. */
 export function progress(theme: Theme, done: number, total: number, options: ProgressOptions = {}): string {
-  const safeTotal = total > 0 ? total : 1;
-  const ratio = Math.min(1, Math.max(0, done / safeTotal));
+  const safeTotal = Number.isFinite(total) && total > 0 ? total : 1;
+  const raw = Number.isFinite(done) ? done / safeTotal : done > 0 ? 1 : 0; // NaN reads as 0, +Infinity as full
+  const ratio = Math.min(1, Math.max(0, Number.isNaN(raw) ? 0 : raw));
   const pct = `${String(Math.round(ratio * 100)).padStart(3)}%`;
   let counts = options.counts === true ? ` ${done}/${total}` : '';
   let label = options.label === undefined ? '' : `${options.label} `;
