@@ -14,12 +14,12 @@ const box = cliSpinners.boxBounce.frames;   // ▖ ▘ ▝ ▗  (one pixel orbit
 
 /** Two-cell sequences for the Unicode glyph set; the first frame is the rest state. */
 const unicodeFrames: Readonly<Record<Status, readonly string[]>> = {
-  // No frame of one status may equal another status's resting glyph: NO_COLOR
-  // rows must stay readable mid-animation. ok winks with a full top row, bad
-  // flickers through quarter blocks, never through pending's or active's shades.
+  // No frame of one status may look like another status, even without color:
+  // ok winks with a full top row, bad flashes solid like an alarm lamp, and
+  // only active uses the orbiting quarter blocks.
   ok: ['▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▀', '▀▄'],
   warn: ['▞▚', '▞▚', '▞▚', '▚▞', '▚▞', '▚▞'],
-  bad: ['▄▀', '▄▀', '▄▀', '▗▘', '▖▝', '▗▘'],
+  bad: ['▄▀', '▄▀', '▄▀', '▄▀', '██', '▄▀', '▄▀', '▄▀', '▄▀', '██', '▄▀', '██'],
   info: ['▌▐', '▌▐', '▌▐', '▌▐', '▐▌', '▐▌', '▐▌', '▐▌'],
   pending: ['░░', '░░', '░░', '░░', '░░', '░░', '▒░', '░▒'],
   active: [box[0]! + box[1]!, box[1]! + box[2]!, box[2]! + box[3]!, box[3]! + box[0]!],

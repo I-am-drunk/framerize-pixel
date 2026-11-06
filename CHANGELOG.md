@@ -29,7 +29,8 @@ the project follows Semantic Versioning (see docs/release.md).
 - Animated marks: `withTick(theme, n)` draws frame `n` of every status mark,
   task row and secret mask; frame 0 is the resting glyph. `live` accepts a
   per-tick frame function. `framerize-pixel showcase --live[=seconds]` shows
-  the animated board. Frames come from cli-spinners sets (`boxBounce`, `noise`).
+  the animated board. Frames come from cli-spinners sets (`boxBounce`). No frame
+  of one status looks like another status, so NO_COLOR rows stay readable mid-animation.
 - Width-invariant test at eight widths; PTY tests through node-pty; examples
   for Server status and Remote pairing; README, TESTING.md, release workflow.
 
