@@ -1,0 +1,4 @@
+# Captures and snapshots are compared byte for byte; never convert their line endings.
+captures/** -text
+# Everything else: normalize to LF in the repository.
+* text=auto eol=lf

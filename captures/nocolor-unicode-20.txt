@@ -1,0 +1,54 @@
+▔▔ framerize-pix… ▔▔
+▛▀ framerize-pix… ▀▜
+▌ Retro pixel      ▐
+▌ terminal styling ▐
+▌ for Framerize.   ▐
+▌ Readable at 40   ▐
+▌ columns, honest  ▐
+▌ without color.   ▐
+▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟
+
+▔▔ status ▔▔▔▔▔▔▔▔▔▔
+✔  service     runn…
+⚠  upstream    slow…
+✘  credentia…  toke…
+ℹ  version     0.1.…
+
+▔▔ tasks ▔▔▔▔▔▔▔▔▔▔▔
+1/4 ✔  Resolve prof…
+2/4 ●  Check remote
+3/4 ◌  Install serv…
+4/4 –  Open firewall
+
+▔▔ accounts ▔▔▔▔▔▔▔▔
+ID  Kind  Sta…  Used
+▔▔  ▔▔▔▔  ▔▔▔▔  ▔▔▔▔
+a…  oau…  rea…  2m …
+b…  tok…  exp…  3d …
+g…  oau…  dis…  nev…
+
+sync ███░░  58% 7/12
+profi…  ~/.config/a…
+token   ••••••••
+
+app 0.1.0-alpha.1
+
+Usage
+  app <command>
+    [options]
+
+Commands
+  up
+    Pair, install
+    and start the
+    service
+  check
+    Report readiness
+    as text or JSON
+
+Options
+  --json
+    Machine-readable
+    output; nothing
+    else reaches
+    stdout

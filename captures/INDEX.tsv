@@ -1,0 +1,10 @@
+file	color	glyphs	columns	size
+plain-ascii-40.txt	0	ascii	40	45 lines
+plain-ascii-80.txt	0	ascii	80	40 lines
+plain-unicode-60.txt	0	unicode	60	41 lines
+color16-unicode-40.ansi	1	unicode	40	45 lines
+color256-unicode-80.ansi	2	unicode	80	40 lines
+truecolor-unicode-100.ansi	3	unicode	100	40 lines
+truecolor-phosphor-80.ansi	3	unicode	80	40 lines
+nocolor-unicode-20.txt	0	unicode	20	54 lines
+dumb-unicode-80.txt	0	ascii	80	40 lines

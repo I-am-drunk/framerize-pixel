@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+// framerize-pixel CLI: showcase, interactive demo, version. Styling only; no network.
+import { createOutput, createTheme, showcase, VERSION } from '../dist/index.js';
+
+const args = process.argv.slice(2);
+const command = args.find((a) => !a.startsWith('--')) ?? 'showcase';
+const mode = args.includes('--json') ? 'json' : args.includes('--plain') ? 'plain' : 'human';
+const ascii = args.includes('--ascii');
+const palette = args.includes('--phosphor') ? 'phosphor' : 'crt';
+const widthArg = args.find((a) => a.startsWith('--width='));
+const columns = widthArg === undefined ? undefined : Number(widthArg.slice(8));
+
+const out = createOutput({ mode });
+if (command === 'version' || args.includes('--version')) {
+  out.say(VERSION, { always: mode !== 'json' });
+  out.json({ name: 'framerize-pixel', version: VERSION });
+} else if (command === 'showcase') {
+  const { crt, phosphor, live, withTick, TICK_MS, board } = await import('../dist/index.js');
+  const theme = createTheme({ mode, ascii, palette: palette === 'phosphor' ? phosphor : crt,
+    ...(Number.isFinite(columns) && columns > 0 ? { columns } : {}) });
+  const rawSeconds = Number((args.find((a) => a.startsWith('--live')) ?? '').split('=')[1] ?? 8);
+  const seconds = Number.isFinite(rawSeconds) && rawSeconds > 0 ? rawSeconds : 8; // --live, --live=0, --live=abc all mean 8
+  if (args.some((a) => a.startsWith('--live')) && theme.caps.tty && mode === 'human') {
+    // Animated marks: the region redraws the showcase at each tick; Ctrl+C restores the terminal.
+    const controller = new AbortController();
+    process.once('SIGINT', () => controller.abort());
+    const region = live(theme, { frames: [''], interval: TICK_MS, signal: controller.signal });
+    // The board fits 24 rows; log-update clips taller frames to the terminal height.
+    region.update((tick) => board(withTick(theme, tick)));
+    // Ctrl+C ends the wait at once instead of running out the timer.
+    await new Promise((resolve) => { const t = setTimeout(resolve, seconds * 1000); controller.signal.addEventListener('abort', () => { clearTimeout(t); resolve(); }, { once: true }); });
+    region.done(board(theme));
+    if (controller.signal.aborted) process.exitCode = 130;
+  } else {
+    out.say(showcase(theme));
+    out.json({ name: 'framerize-pixel', version: VERSION, showcase: 'suppressed in json mode' });
+  }
+} else if (command === 'hover') {
+  // Mouse hover board: rest the pointer on a mark to play its enter, move away for its exit.
+  const { hoverBoard } = await import('../dist/index.js');
+  const theme = createTheme({ mode, ascii, ...(Number.isFinite(columns) && columns > 0 ? { columns } : {}) });
+  const seconds = Number((args.find((a) => a.startsWith('--seconds=')) ?? '').split('=')[1]);
+  const controller = new AbortController();
+  process.once('SIGINT', () => controller.abort());
+  process.exitCode = await hoverBoard(theme, [
+    { status: 'ok', label: 'service', detail: 'running on 127.0.0.1:8788' },
+    { status: 'warn', label: 'upstream', detail: 'slow: 1,420 ms median' },
+    { status: 'bad', label: 'credentials', detail: 'token file missing' },
+    { status: 'info', label: 'version', detail: VERSION },
+    { status: 'pending', label: 'queue', detail: 'waiting' },
+    { status: 'active', label: 'sync', detail: '7 of 12' },
+  ], { signal: controller.signal, ...(Number.isFinite(seconds) && seconds > 0 ? { durationMs: seconds * 1000 } : {}) });
+} else if (command === 'demo') {
+  const { runDemo } = await import('../dist/demo.js');
+  process.exitCode = await runDemo({ mode, ascii });
+} else {
+  out.note(`unknown command: ${command}`);
+  out.note('usage: framerize-pixel [showcase|hover|demo|version] [--json|--plain] [--ascii] [--phosphor] [--width=N] [--live[=seconds]]');
+  process.exitCode = 2;
+}

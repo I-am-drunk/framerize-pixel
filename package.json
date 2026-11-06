@@ -1,0 +1,60 @@
+{
+  "name": "framerize-pixel",
+  "version": "0.1.0-alpha.1",
+  "description": "Framerize Pixel: retro pixel terminal styling for the Framerize CLIs. Palette, borders, pixel marks, status rows, tasks and prompts on mature terminal packages",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/I-am-drunk/framerize-pixel.git"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "sideEffects": false,
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "framerize-pixel": "./bin/framerize-pixel.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "README.md",
+    "LICENSE",
+    "THIRD-PARTY.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "test:pty": "node scripts/pty-prep.mjs && node --test test/pty/*.test.mjs",
+    "test:pack": "node scripts/pack-check.mjs",
+    "captures": "node scripts/capture.mjs",
+    "showcase": "node bin/framerize-pixel.js showcase",
+    "check": "npm run typecheck && npm run build && npm test && npm run test:pack"
+  },
+  "dependencies": {
+    "@clack/core": "1.5.1",
+    "ansi-escapes": "7.3.0",
+    "ansi-styles": "7.0.0",
+    "cli-spinners": "3.4.0",
+    "cli-truncate": "6.2.0",
+    "figures": "6.1.0",
+    "log-update": "8.0.0",
+    "string-width": "8.3.0",
+    "strip-ansi": "7.2.0",
+    "wrap-ansi": "10.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "node-pty": "1.1.0",
+    "typescript": "5.9.3"
+  }
+}

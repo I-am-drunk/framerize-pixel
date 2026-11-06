@@ -1,0 +1,40 @@
+[38;2;96;128;160m▔▔[39m[1m framerize-pixel 0.1.0-alpha.1 [22m[38;2;96;128;160m▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔[39m
+[38;2;96;128;160m▛▀[1m framerize-pixel [22m▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▜[39m
+[38;2;96;128;160m▌[39m Retro pixel terminal styling for Framerize.                          [38;2;96;128;160m▐[39m
+[38;2;96;128;160m▌[39m Readable at 40 columns, honest without color.                        [38;2;96;128;160m▐[39m
+[38;2;96;128;160m▙▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▟[39m
+
+[38;2;96;128;160m▔▔[39m[1m status [22m[38;2;96;128;160m▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔[39m
+[38;2;98;212;112m✔ [39m service      [2mrunning on 127.0.0.1:8788[22m
+[38;2;255;214;68m⚠ [39m upstream     [2mslow: 1,420 ms median over the last minute[22m
+[38;2;255;92;92m✘ [39m credentials  [2mtoken file missing[22m
+[38;2;92;200;255mℹ [39m version      [2m0.1.0-alpha.1[22m
+
+[38;2;96;128;160m▔▔[39m[1m tasks [22m[38;2;96;128;160m▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔[39m
+[2m1/4[22m [38;2;98;212;112m✔ [39m Resolve profile
+[2m2/4[22m [38;2;255;176;0m● [39m Check remote  [2mwaiting for 200[22m
+[2m3/4[22m [38;2;128;128;122m◌ [39m Install service
+[2m4/4[22m [38;2;128;128;122m– [39m Open firewall  [2mloopback only[22m
+
+[38;2;96;128;160m▔▔[39m[1m accounts [22m[38;2;96;128;160m▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔[39m
+[1mID         [22m  [1mKind [22m  [1mState   [22m  [1m  Used[22m
+[38;2;96;128;160m▔▔▔▔▔▔▔▔▔▔▔  ▔▔▔▔▔  ▔▔▔▔▔▔▔▔  ▔▔▔▔▔▔[39m
+alpha        oauth  ready     2m ago
+beta-长名字  token  expired   3d ago
+gamma        oauth  disabled   never
+
+sync [38;2;255;176;0m██████████████[39m[38;2;128;128;122m░░░░░░░░░░[39m  58%[2m 7/12[22m
+[38;2;128;128;122mprofile[39m  ~/.config/app/profile.json
+[38;2;128;128;122mtoken  [39m  ••••••••
+
+[1mapp[22m [2m0.1.0-alpha.1[22m
+
+[1mUsage[22m
+  app <command> [options]
+
+[1mCommands[22m
+  [38;2;255;176;0mup   [39m  Pair, install and start the service
+  [38;2;255;176;0mcheck[39m  Report readiness as text or JSON
+
+[1mOptions[22m
+  [38;2;255;176;0m--json[39m  Machine-readable output; nothing else reaches stdout
