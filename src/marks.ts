@@ -11,13 +11,15 @@ import type { Status } from './status.js';
 export const TICK_MS = 200;
 
 const box = cliSpinners.boxBounce.frames;   // ▖ ▘ ▝ ▗  (one pixel orbiting)
-const noise = cliSpinners.noise.frames;     // ▓ ▒ ░  (static fading)
 
 /** Two-cell sequences for the Unicode glyph set; the first frame is the rest state. */
 const unicodeFrames: Readonly<Record<Status, readonly string[]>> = {
-  ok: ['▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▄▀', '▀▄'],
+  // No frame of one status may equal another status's resting glyph: NO_COLOR
+  // rows must stay readable mid-animation. ok winks with a full top row, bad
+  // flickers through quarter blocks, never through pending's or active's shades.
+  ok: ['▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▄', '▀▀', '▀▄'],
   warn: ['▞▚', '▞▚', '▞▚', '▚▞', '▚▞', '▚▞'],
-  bad: ['▄▀', '▄▀', '▄▀', noise[1]! + noise[1]!, noise[2]! + noise[2]!, noise[1]! + noise[1]!],
+  bad: ['▄▀', '▄▀', '▄▀', '▗▘', '▖▝', '▗▘'],
   info: ['▌▐', '▌▐', '▌▐', '▌▐', '▐▌', '▐▌', '▐▌', '▐▌'],
   pending: ['░░', '░░', '░░', '░░', '░░', '░░', '▒░', '░▒'],
   active: [box[0]! + box[1]!, box[1]! + box[2]!, box[2]! + box[3]!, box[3]! + box[0]!],

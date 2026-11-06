@@ -35,3 +35,14 @@ test('animated rows keep their width and alignment at every tick', () => {
     assert.deepEqual(out.split('\n').map(width), base.split('\n').map(width), `tick ${t}`);
   }
 });
+
+test('no animation frame equals another status\'s resting glyph, so NO_COLOR rows stay readable', () => {
+  for (const [set, uni] of [[unicode, true], [ascii, false]]) {
+    const resting = new Map(STATUSES.map((s) => [set[s], s]));
+    for (const s of STATUSES) for (let t = 0; t < 64; t += 1) {
+      const frame = markFrame(set, uni, s, t);
+      const owner = resting.get(frame);
+      assert.ok(owner === undefined || owner === s, `${s} tick ${t} draws ${owner}'s resting glyph ${JSON.stringify(frame)}`);
+    }
+  }
+});
